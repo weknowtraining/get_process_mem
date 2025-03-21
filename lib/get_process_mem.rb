@@ -11,9 +11,9 @@ class GetProcessMem
     self.class.send(:number_to_bigdecimal, value)
   end
 
-  KB_TO_BYTE = number_to_bigdecimal 1024          # 2**10   = 1024
-  MB_TO_BYTE = number_to_bigdecimal 1_048_576     # 1024**2 = 1_048_576
-  GB_TO_BYTE = number_to_bigdecimal 1_073_741_824 # 1024**3 = 1_073_741_824
+  KB_TO_BYTE = number_to_bigdecimal 1000
+  MB_TO_BYTE = number_to_bigdecimal 1_000_000
+  GB_TO_BYTE = number_to_bigdecimal 1_000_000_000
   CONVERSION = {"kb" => KB_TO_BYTE, "mb" => MB_TO_BYTE, "gb" => GB_TO_BYTE}
   ROUND_UP = number_to_bigdecimal "0.5"
   attr_reader :pid
@@ -98,7 +98,7 @@ class GetProcessMem
       line.match(pss)
     end.reduce(0) do |sum, line|
       line.match(/(?<value>\d*\.{0,1}\d+)\s+(?<unit>\w\w)/) do |m|
-        value = number_to_bigdecimal(m[:value]) + ROUND_UP
+        value = number_to_bigdecimal(m[:value])
         unit = m[:unit].downcase
         sum += CONVERSION[unit] * value
       end
